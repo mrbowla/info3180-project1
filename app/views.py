@@ -28,14 +28,47 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/secure-page/')
+@login_required
+def secure_page():
+    """Render a secure page on our website that only logged in users can access."""
+    return render_template('secure_page.html')
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    
+    if current_user.is_authenticated:
+        # if user is already logged in, just redirect them to our secure page
+        # or some other page like a dashboard
+        return render_template('secure_page.html')
+        
     form = LoginForm()
-    if request.method == "POST":
+    if request.method == 'POST' and form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        
+        user = UserProfile.query.filter(username== "mrbowla", UserProfile.password == "lab5").first()
+        if user is not None:
+            login_user(user)
+        
+        else:
+            flash('Username or Password is incorrect.', 'danger')
+            flash_errors(form)
+            return render_template('login.html', form=form)
+        flash('Logged in successfully.', 'success')
+        return render_template('secure_page.html')
+        
+        
+    else:
+        flash('Username or Password is incorrect.', 'danger')
+        flash_errors(form)
+        return render_template('login.html', form=form)
         # change this to actually validate the entire form submission
         # and not just one field
-        if form.username.data:
+    #if form.username.data:
             # Get the username and password values from the form.
+           
+            
 
             # using your model, query database for a user based on the username
             # and password submitted
@@ -43,11 +76,21 @@ def login():
             # passed to the login_user() method.
 
             # get user id, load into session
-            login_user(user)
+           # login_user(user)
 
             # remember to flash a message to the user
-            return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
-    return render_template("login.html", form=form)
+          #  return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
+   # return render_template("login.html", form=form)
+
+
+@app.route("/logout/")
+@login_required
+def logout():
+    # Logout the user and end the session
+    logout_user()
+    flash('You have been logged out.', 'danger')
+    return render_template('home.html')
+
 
 
 # user_loader callback. This callback is used to reload the user object from
@@ -56,6 +99,18 @@ def login():
 def load_user(id):
     return UserProfile.query.get(int(id))
 
+
+
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ), 'danger')
+            
+            
 ###
 # The functions below should be applicable to all Flask apps.
 ###
