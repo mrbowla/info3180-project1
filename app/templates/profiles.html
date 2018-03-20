@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %} Profiles {% endblock %}
+{% block css %}
+<link rel= "stylesheet" type= "text/css" href= "{{url_for('static', filename = 'css/styles.css')}}">
+{% endblock%}
+
+{% block main %}
+{% include 'flash_messages.html' %}
+<h1> Profiles</h1>
+
+{% for user in users %}
+
+    <div class="profile">
+        <hr class="top"/>
+        <img id="image" src="{{ url_for('static', filename='uploads/'+user.upload) }}"></img>
+        
+            <div class="info">
+            <span class="name">{{ user.first_name}} {{ user.last_name }}</span> <br/>
+            <div class="view_btn">
+            <a id ="view_button" class='btn btn-primary' href='/profile/{{ user.id }}'>View Profile</a>
+            </div>
+            <img id="icon" src="{{url_for('static', filename='uploads/gender.jpg') }}"></img> {{ user.gender }} <br/>
+            <img id="icon" src="{{url_for('static', filename='uploads/locate.jpg') }}"></img>  {{ user.location}} <br/><br/>
+            </div>
+            
+            
+    </div>
+    
+    <br/>
+{% endfor %}
+
+{% endblock %}

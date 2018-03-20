@@ -1,0 +1,76 @@
+#profile_img
+{
+    position: relative;
+    padding: 15px;
+    float: left;
+    width: 45%;
+    height:225px;
+}
+
+#line{
+color: grey;    
+}
+
+
+.info{
+    text-align: left;
+    margin-top: 50px;
+    color: black;
+    font-weight: bold;
+    
+    
+}
+
+body{
+    background-color: lightblue;
+}
+
+.top{
+color: blue;
+border: solid 2px;
+}
+
+div.profile{
+    overflow: auto;
+    margin: auto;
+    width: 700px;
+    height: 50%;
+    background-color: white;
+    border-top: solid 4px blue;
+}
+
+.bio{
+    margin-left: 15px;
+    color: grey;
+    
+}
+
+#icon{
+    width: 5%;
+    height: 5%;
+    padding: 5px;
+}
+.button{
+    text-align: center;
+    padding: 15px;
+}
+
+#btn1{
+    background-color: green;
+    font-weight: bold;
+    border-color: green;
+    color: white;
+    border-radius: 10%;
+    margin-left: 50px;
+    width: 150px;
+}
+
+#btn2{
+    background-color: skyblue;
+    border-color: skyblue;
+    font-weight: bold;
+    color: white;
+    border-radius: 10%;
+    margin-left: 50px;
+    width: 150px;
+}

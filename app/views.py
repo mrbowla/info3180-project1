@@ -4,12 +4,13 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
+import os, random, datetime
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm
+from forms import LoginForm, MyForm
 from models import UserProfile
+from werkzeug.utils import secure_filename
 
 
 ###
@@ -28,11 +29,79 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/secure-page/')
-@login_required
-def secure_page():
-    """Render a secure page on our website that only logged in users can access."""
-    return render_template('secure_page.html')
+@app.route('/profile/', methods=["GET", "POST"])
+def profile():
+    myform= MyForm()
+    
+    if request.method == 'POST':
+        if myform.validate_on_submit():
+            first_name= myform.first_name.data
+            last_name= myform.last_name.data
+            gender= myform.gender.data
+            email= myform.email.data
+            location= myform.location.data
+            biography= myform.biography.data
+            upload= myform.upload.data
+            
+            filename= secure_filename(upload.filename)
+            upload.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename
+                ))
+            
+            profile_date = datetime.date.today().strftime("%b %d, %Y")
+            user_id = genId(first_name, last_name, location)
+            
+            new_profile = UserProfile(first_name=first_name, last_name=last_name, gender=gender, email=email, location=location, biography=biography, upload=filename, profile_creation=profile_date)
+            
+            db.session.add(new_profile)
+            db.session.commit()
+                
+            
+            flash('Profile added!')
+            return redirect(url_for("profiles"))
+            
+        flash_errors(myform)
+    return render_template('profile.html', form=myform)
+    
+
+@app.route('/profiles/', methods=["GET", "POST"])
+def profiles():
+    
+    users = UserProfile.query.all()
+
+    user_list = [{"userid": user.id} for user in users]
+    
+    if request.method == "GET":
+        file_folder = app.config['UPLOAD_FOLDER']
+        return render_template("profiles.html", users=users)
+    
+    elif request.method == "POST":
+        response = make_response(jsonify({"users": user_list}))                                           
+        response.headers['Content-Type'] = 'application/json'            
+        return response
+        
+        
+        
+@app.route('/profile/<userid>', methods=["GET", "POST"])
+def get_profile(userid):
+    
+    user = UserProfile.query.filter_by(id=userid).first()
+    
+    if request.method == "GET":
+        file_folder = app.config['UPLOAD_FOLDER']
+        return render_template("user_profile.html", user=user)
+    
+    elif request.method == "POST":
+        if user is not None:
+            response = make_response(jsonify(userid=user.id, first_name=user.first_namename, last_name=user.last_namename, gender=user.gender, email=user.email, upload=user.upload,  location=user.location, biography=user.biography,
+                    profile_creation=user.profile_creation))
+            response.headers['Content-Type'] = 'application/json'            
+            return response
+        else:
+            flash('No User Found', 'danger')
+            return redirect(url_for("profiles"))
+
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -138,6 +207,22 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
+    
+    
+def genId(first_name, last_name, location):
+    nid = []
+    for x in first_name:
+        nid.append(str(ord(x)))
+    for x in last_name:
+        nid.append(str(ord(x)))
+    for x in location:
+        nid.append(str(ord(x)))
+    
+    random.shuffle(nid)
+    
+    nid = "".join(nid)
+    
+    return nid[:7]
 
 
 if __name__ == '__main__':

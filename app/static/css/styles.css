@@ -1,0 +1,62 @@
+#image
+{
+    padding: 15px;
+    float: left;
+    width: 20%;
+    height:180px;
+}
+
+#btn{
+    background-color: green;
+    border-color: green;
+}
+
+#icon{
+    width: 3.5%;
+    height: 3.5%;
+    padding: 5px;
+}
+
+.info{
+    text-align: left;
+    margin-top: 50px;
+    color: lightgrey;
+    font-weight: bold;
+    
+    
+}
+
+body{
+    background-color: lightblue;
+}
+
+span.name{
+    font-weight: bold;
+    color: black;
+}
+
+#view_button{
+    background-color: green;
+    border-color: green;
+    padding: 10px;
+    width: 300px;
+}
+
+.view_btn{
+    float: right;
+    vertical-align: middle;
+    margin-right: 150px;
+    padding: 20px;
+}
+
+
+
+.top{
+color: blue;
+border: solid 2px;
+}
+
+div.profile{
+    padding-bottom: 80px;
+    background-color: white;
+}

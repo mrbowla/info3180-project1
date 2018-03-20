@@ -1,0 +1,30 @@
+textarea{
+   margin-top: 10px;
+   width: 20.7em;
+   height: 8em;
+   resize: none;
+   border-radius: 5px;
+}
+
+select{
+    margin-top: 10px;
+    width: 330px;
+    border: none; /* <-- This thing here */
+    border:solid 1.5px #ccc;
+    border-radius: 5px;
+    border-color: lightgrey;
+}
+
+input{
+    margin-top: 10px;
+    border: none; /* <-- This thing here */
+    border:solid 1.5px #ccc;
+    border-radius: 5px;
+    border-color: lightgrey;
+    
+}
+
+.top{
+color: blue;
+border: solid 2px;
+}
